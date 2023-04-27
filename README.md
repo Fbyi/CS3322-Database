@@ -3,6 +3,7 @@ This is the place where I publish my homework for Database class.
 
 Lab1.0 was submitted at 2023.3.21
 It is a basic version of simple DB, based on which future improvements will be made.
+It has been replaced by Lab1.1, because error occur in compiling process.
 
 Lab1.1 was first submitted at 2023.3.26
 It has removed all Chinese annotations form Lab1.0 to ensure successful conpiling.
