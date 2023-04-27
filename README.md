@@ -1,7 +1,7 @@
 # CS3322-Database
 This is the place where I publish my homework for Database class.
 
-Lab1.0 was submitted at 2023.3.21
+Lab1.0 was first submitted at 2023.3.21
 It is a basic version of simple DB, based on which future improvements will be made.
 It has been replaced by Lab1.1, because error occur in compiling process.
 
