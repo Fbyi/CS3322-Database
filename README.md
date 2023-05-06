@@ -1,6 +1,6 @@
 # CS3322-Database
 This is the place where I publish my homework for Database class.
-# modification log
+# Modification Log
 ## lab1
 - Changes
   - TupleDesc.java
