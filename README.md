@@ -2,9 +2,7 @@
 This is the place where I publish my homework for Database class.
 
 # modification log
-
 ## lab1
-
 - 修改
   - TupleDesc.java
    - Tuple.java
@@ -15,9 +13,7 @@ This is the place where I publish my homework for Database class.
   - HeapPage.java
   - HeapFile.java
   - SeqScan.java
-
 ## lab2
-
 - 增加
   - BTree_12.java
   - IndexDblterator.java
@@ -29,6 +25,8 @@ This is the place where I publish my homework for Database class.
   - IndexPredicate.java/
   - Predicate.java
   - HeapPage.java
+
+# 版本说明
 
 Lab1.0 was first submitted at 2023.4.21
 It is a basic version of simple DB, based on which future improvements will be made.
