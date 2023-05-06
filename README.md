@@ -14,7 +14,7 @@ This is the place where I publish my homework for Database class.
   - SeqScan.java
 ## lab2
 - Addition
-  - BTree_12.java
+  - BTree_.java #12 files in total
   - IndexDblterator.java
   - IndexPredicate.java
   - Transaction.java
