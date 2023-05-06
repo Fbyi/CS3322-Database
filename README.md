@@ -1,6 +1,35 @@
 # CS3322-Database
 This is the place where I publish my homework for Database class.
 
+# modification log
+
+## lab1
+
+- 修改
+  - TupleDesc.java
+   - Tuple.java
+   - Catalog.java
+   - BufferPool.java
+   - HeapPageId.java
+  - RecordID.java
+  - HeapPage.java
+  - HeapFile.java
+  - SeqScan.java
+
+## lab2
+
+- 增加
+  - BTree_12.java
+  - IndexDblterator.java
+  - IndexPredicate.java
+  - Transaction.java
+- 修改
+  - BufferPool.java
+  - BTreeFile.java
+  - IndexPredicate.java/
+  - Predicate.java
+  - HeapPage.java
+
 Lab1.0 was first submitted at 2023.4.21
 It is a basic version of simple DB, based on which future improvements will be made.
 It has been replaced by Lab1.1, because error occur in compiling process.
