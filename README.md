@@ -41,10 +41,6 @@ This is the place where I publish my homework for Database class.
   *  src/simpledb/BufferPool.java
   *  src/simpledb/Insert.java
   *  src/simpledb/Delete.java
-
-***
-
-
 # About Versions
 - Lab1.0 was first submitted at 2023.4.21
   It is a basic version of simple DB, based on which future improvements will be made.
