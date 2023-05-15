@@ -10,6 +10,15 @@ import java.util.*;
 public class Aggregate extends Operator {
 
     private static final long serialVersionUID = 1L;
+    private int agIndex;
+    private int gbIndex;
+    private Aggregator.Op aggreOp;
+    private DbIterator child;
+    private TupleDesc child_td;
+    private Aggregator aggregator;
+    private DbIterator aggregateIter;
+    private Type gbFieldType;
+    private TupleDesc td;
 
     /**
      * Constructor.
