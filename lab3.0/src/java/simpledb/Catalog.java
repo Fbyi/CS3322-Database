@@ -18,6 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Catalog {
 
+    private HashMap<Integer, DbFile> id2file;
+    private HashMap<Integer, String> id2pkey;
+    private HashMap<Integer, String> id2name;
+    private HashMap<String, Integer> name2id;
+
     /**
      * Constructor.
      * Creates a new, empty catalog.
@@ -130,6 +135,10 @@ public class Catalog {
             throw new NoSuchElementException();
         }
         return id2name.get(id);
+    }
+
+    private boolean isIdValid(int id, HashMap<?, ?> map) {
+        return map.containsKey(id);
     }
     
     /** Delete all tables from the catalog */
