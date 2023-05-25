@@ -25,6 +25,10 @@ public class BufferPool {
     other classes. BufferPool should use the numPages argument to the
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
+    public final int PAGES_NUM;
+    private PageLruCache lruPagesPool;
+    private final LockManager lockManager;
+    private final long SLEEP_INTERVAL;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -36,7 +40,7 @@ public class BufferPool {
         PAGES_NUM = numPages;
         lruPagesPool = new PageLruCache(PAGES_NUM);
         lockManager = new LockManager();
-        SLEEP_INTERVAL = 1000;
+        SLEEP_INTERVAL = 500;
     }
     
     public static int getPageSize() {
@@ -151,6 +155,16 @@ public class BufferPool {
             flushPages(tid);
         } else {
             revertTransactionAction(tid);
+        }
+    }
+
+    public synchronized void revertTransactionAction(TransactionId tid) {
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            Page p = it.next();
+            if (p.isDirty() != null && p.isDirty().equals(tid)) {
+                lruPagesPool.reCachePage(p.getId());
+            }
         }
     }
 
