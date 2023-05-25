@@ -25,6 +25,10 @@ public class BufferPool {
     other classes. BufferPool should use the numPages argument to the
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
+    public final int PAGES_NUM;
+    private PageLruCache lruPagesPool;
+    private final LockManager lockManager;
+    private final long SLEEP_INTERVAL;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -36,7 +40,7 @@ public class BufferPool {
         PAGES_NUM = numPages;
         lruPagesPool = new PageLruCache(PAGES_NUM);
         lockManager = new LockManager();
-        SLEEP_INTERVAL = 1000;
+        SLEEP_INTERVAL = 500;
     }
     
     public static int getPageSize() {
@@ -112,6 +116,9 @@ public class BufferPool {
     public  void releasePage(TransactionId tid, PageId pid) {
         // some code goes here
         // not necessary for lab1|lab2
+        if (!lockManager.unlock(tid, pid)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -122,13 +129,14 @@ public class BufferPool {
     public void transactionComplete(TransactionId tid) throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        transactionComplete(tid, true);
     }
 
     /** Return true if the specified transaction has a lock on the specified page */
     public boolean holdsLock(TransactionId tid, PageId p) {
         // some code goes here
         // not necessary for lab1|lab2
-        return false;
+        return lockManager.getLockState(tid, p) != null;
     }
 
     /**
@@ -142,6 +150,22 @@ public class BufferPool {
         throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        lockManager.releaseTransactionLocks(tid);
+        if (commit) {
+            flushPages(tid);
+        } else {
+            revertTransactionAction(tid);
+        }
+    }
+
+    public synchronized void revertTransactionAction(TransactionId tid) {
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            Page p = it.next();
+            if (p.isDirty() != null && p.isDirty().equals(tid)) {
+                lruPagesPool.reCachePage(p.getId());
+            }
+        }
     }
 
     /**
@@ -163,6 +187,11 @@ public class BufferPool {
         throws DbException, IOException, TransactionAbortedException {
         // some code goes here
         // not necessary for lab1
+        HeapFile table = (HeapFile) Database.getCatalog().getDbFile(tableId);
+        ArrayList<Page> affectedPages = table.insertTuple(tid, t);
+        for (Page page : affectedPages) {
+            page.markDirty(true, tid);
+        }
     }
 
     /**
@@ -182,6 +211,10 @@ public class BufferPool {
         throws DbException, IOException, TransactionAbortedException {
         // some code goes here
         // not necessary for lab1
+        int tableId = t.getRecordId().getPageId().getTableId();
+        HeapFile table = (HeapFile) Database.getCatalog().getDbFile(tableId);
+        Page affectedPage = table.deleteTuple(tid, t);
+        affectedPage.markDirty(true, tid);
     }
 
     /**
@@ -192,6 +225,13 @@ public class BufferPool {
     public synchronized void flushAllPages() throws IOException {
         // some code goes here
         // not necessary for lab1
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            Page p = it.next();
+            if (p.isDirty() != null) {
+                flushPage(p);
+            }
+        }
 
     }
 
@@ -215,6 +255,10 @@ public class BufferPool {
     private synchronized  void flushPage(PageId pid) throws IOException {
         // some code goes here
         // not necessary for lab1
+        HeapPage dirty_page = (HeapPage) page;
+        HeapFile table = (HeapFile) Database.getCatalog().getDbFile(page.getId().getTableId());
+        table.writePage(dirty_page);
+        dirty_page.markDirty(false, null);
     }
 
     /** Write all pages of the specified transaction to disk.
@@ -222,6 +266,16 @@ public class BufferPool {
     public synchronized  void flushPages(TransactionId tid) throws IOException {
         // some code goes here
         // not necessary for lab1|lab2
+        Iterator<Page> it = lruPagesPool.iterator();
+        while (it.hasNext()) {
+            Page p = it.next();
+            if (p.isDirty() != null && p.isDirty().equals(tid)) {
+                flushPage(p);
+                if (p.isDirty() == null) {
+                    p.setBeforeImage();
+                }
+            }
+        }
     }
 
     /**
